@@ -1,6 +1,6 @@
 import yaml
-import undetected_chromedriver as uc
-
+# import undetected_chromedriver as uc
+from seleniumwire import undetected_chromedriver as uc
 # Load and validate config
 config = yaml.safe_load(open('config.yaml').read())
 
@@ -19,6 +19,6 @@ def create_bot(headless=False):
 
     bot = uc.Chrome(options=options)
 
-    bot.set_page_load_timeout(25)
+    # bot.set_page_load_timeout(25)
     bot.set_window_size(1920, 1080)
     return bot
