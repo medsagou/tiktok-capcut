@@ -108,15 +108,15 @@ def upload_to_tiktok():
     print("opening new tab..")
     main_tiktok_page = bot.current_window_handle
 
-    bot.execute_script("window.open('');")
+    bot.execute_script("window.open('https://www.capcut.com/signup');")
 
     # Switch to the new tab
     bot.switch_to.window(bot.window_handles[1])
-    print("getting capcut site")
-    try:
-        bot.get('https://www.capcut.com/signup')
-    except:
-        pass
+    # print("getting capcut site")
+    # try:
+    #     bot.get('https://www.capcut.com/signup')
+    # except:
+    #     pass
 
     main_cacpcut_page = bot.current_window_handle
     try:
@@ -136,15 +136,14 @@ def upload_to_tiktok():
                 login_page = handle
                 break
 
-
         # change the control to signin page
         bot.switch_to.window(login_page)
         print("switched to login with tiktok popup...")
         print("finding the Continue button")
         try:
-            continue_button =  WebDriverWait(bot, 100).until(
-            EC.presence_of_element_located((By.ID, "auth-btn"))
-        )
+            continue_button = WebDriverWait(bot, 100).until(
+                EC.presence_of_element_located((By.ID, "auth-btn"))
+            )
         except Exception as e:
             print(e)
             print('error, finding the Continue button...')
@@ -160,9 +159,9 @@ def upload_to_tiktok():
         bot.switch_to.window(main_cacpcut_page)
 
     try:
-        create_button =  WebDriverWait(bot, 5).until(
-        EC.presence_of_element_located((By.ID, "create-bottom"))
-    )
+        create_button = WebDriverWait(bot, 20).until(
+            EC.presence_of_element_located((By.ID, "create-bottom"))
+        )
     except Exception as e:
         print(e)
         print('error, finding the open capcut button...')
@@ -180,6 +179,15 @@ def upload_to_tiktok():
         print(e)
     else:
         print("you are in the edit page")
+    
+    try:
+        # Wait until the "Loading..." text is not present in the page
+        WebDriverWait(bot, 500).until(
+            EC.invisibility_of_element((By.XPATH, "//*[text()='Loading...']"))
+        )
+        print("The 'Loading...' text is no longer present on the page.")
+    except:
+        print("Timed out waiting for 'Loading...' text to disappear.")
 
     try:
         # Wait until the button with a child containing the text 'Upload' is present
@@ -211,8 +219,6 @@ def upload_to_tiktok():
         video_uploader.send_keys(p)
         print("we've send the path to the input")
 
-
-
     # try:
     #     WebDriverWait(bot, 100).until(
     #         EC.presence_of_element_located((By.ID, 'canvas-cover')))
@@ -220,8 +226,6 @@ def upload_to_tiktok():
     #     print('we didnt find the canvas cover')
     # else:
     #     print("we did fined the cover canvas")
-
-
 
     try:
         # Wait until the "Loading..." text is not present in the page
@@ -245,6 +249,8 @@ def upload_to_tiktok():
         exporter_first.click()
         print("export button clicked")
 
+    
+
     try:
         TIKTOK = WebDriverWait(bot, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, '[name="icon-thirdpart-tiktok"]')))
@@ -257,6 +263,8 @@ def upload_to_tiktok():
         TIKTOK.click()
         print("TIKTOK button clicked")
 
+    time.sleep(200)
+
     try:
         exporter_first = WebDriverWait(bot, 100).until(
             EC.presence_of_element_located((By.ID, 'export-confirm-button')))
@@ -268,7 +276,6 @@ def upload_to_tiktok():
         # time.sleep(1)
         exporter_first.click()
         print("export 2 button clicked")
-
 
     try:
         title_textarea = WebDriverWait(bot, 1000).until(
@@ -290,31 +297,35 @@ def upload_to_tiktok():
     else:
         share.click()
         print("share button is clicked")
-
+    # -------------------------------------------------------------------------------------
+    # time.sleep(10)
     request = None
-    for request in bot.requests:
-        print(request.url)
-        # print('https://edit-api-sg.capcut.com/lv/v1/share_task/publish_asset_to_third_party_platform')
-    time.sleep(300)
-    for _ in range(10):  # Adjust the range as needed for your use case
-        bot.wait_for_request('publish')
-        for req in bot.requests:
-            print(req.path)
-            if 'publish' in req.path:
-                request = req
-                print('here', req)
-                break
-        if request:
-            break
+    print("searching for the request")
+    request = utils.get_request(bot)
+
+    # for _ in range(10):  # Adjust the range as needed for your use case
+    #     bot.wait_for_request('publish')
+    #     for req in bot.requests:
+    #         print(req.path)
+    #         if 'publish' in req.path:
+    #             request = req
+    #             print('here', req)
+    #             break
+    #     if request:
+    #         break
 
     # Check if the request was captured
     if request:
+        print("requesting now")
         # Resend the request using the 'requests' library
         response = requests.post(request.url, headers=request.headers, data=request.body)
         response2 = requests.post(request.url, headers=request.headers, data=request.body)
-
+        response3 = requests.post(request.url, headers=request.headers, data=request.body)
+        response4 = requests.post(request.url, headers=request.headers, data=request.body)
         print(f"First response status code: {response.status_code}")
         print(f"Second response status code: {response2.status_code}")
+        print(f"third response status code: {response3.status_code}")
+        print(f"fourth response status code: {response4.status_code}")
     else:
         print("The 'publish' request was not captured.")
 

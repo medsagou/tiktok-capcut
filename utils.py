@@ -38,3 +38,10 @@ def check_close_btn(bot):
         print("we've find the close button")
         close_btn.click()
         check_close_btn(bot)
+
+def get_request(bot):
+    while True:
+        for req in bot.requests:
+            if 'publish_asset_to_third_party_platform' in req.url:
+                print(req.url)
+                return req
