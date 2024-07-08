@@ -42,73 +42,60 @@ def upload_to_tiktok():
         profile_element.click()
         print("PROFILE FOUND AND CLICKED!")
 
-    # try:
-    #     edit_profile =  WebDriverWait(bot, 100).until(
-    #     EC.element_to_be_clickable((By.XPATH, "//button[@type='button' and .//*[contains(text(), 'Edit profile')]]"))
-    # )
-    # except Exception as e:
-    #     print(e)
-    #     print('error, finding the edit profile button')
-    #     pass
-    # else:
-    #     edit_profile.click()
-    #     print("EDIT PROFILE FOUND AND CLICKED!")
-    #
-    # try:
-    #     profile_pic_uploder = WebDriverWait(bot, 1000).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, '[type="file"]')))
-    #
-    # except:
-    #     print('error finding the profile pic editor')
-    # else:
-    #     print("we've find the file uploader button")
-    #     # p = os.getcwd()+f'\\render\\{name}.mp4'
-    #     p = os.getcwd() + '\\dd.PNG'
-    #     print(p)
-    #     profile_pic_uploder.send_keys(p)
-    #     print("we've send the path to the input")
-    #
-    # try:
-    #     apply_pic = WebDriverWait(bot, 10).until(
-    #         EC.presence_of_element_located(
-    #             (By.XPATH, "//button[text()='{}']".format('Apply'))
-    #         )
-    #     )
-    # except:
-    #     print("error appling the pic")
-    # else:
-    #     apply_pic.click()
-    #     print("profile pic applied")
-    # try:
-    #     bio = WebDriverWait(bot, 10).until(
-    #         EC.presence_of_element_located(
-    #             (By.CSS_SELECTOR, '[placeholder="Bio"]'))
-    #         )
-    #
-    # except:
-    #     print('error, finding the bio input')
-    #
-    # else:
-    #     bio.send_keys('bio text added')
-    #     print("bio FOUND AND filed!")
-    #
-    # try:
-    #     submit = WebDriverWait(bot, 10).until(
-    #         EC.presence_of_element_located(
-    #             (By.CSS_SELECTOR, '[data-e2e="edit-profile-save"]'))
-    #     )
-    #
-    # except:
-    #     print('error, finding the edit profile save button')
-    #
-    # else:
-    #     submit.send_keys('bio text added')
-    #     print("save EDIT PROFILE FOUND AND CLICKED!")
+    try:
+        edit_profile =  WebDriverWait(bot, 100).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[@type='button' and .//*[contains(text(), 'Edit profile')]]"))
+    )
+    except Exception as e:
+        print(e)
+        print('error, finding the edit profile button')
+        pass
+    else:
+        edit_profile.click()
+        print("EDIT PROFILE FOUND AND CLICKED!")
+    
+    try:
+        profile_pic_uploder = WebDriverWait(bot, 1000).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '[type="file"]')))
+    
+    except:
+        print('error finding the profile pic editor')
+    else:
+        print("we've find the file uploader button")
+        # p = os.getcwd()+f'\\render\\{name}.mp4'
+        p = os.getcwd() + '\\dd.PNG'
+        print(p)
+        profile_pic_uploder.send_keys(p)
+        print("we've send the path to the input")
+    
+    try:
+        apply_pic = WebDriverWait(bot, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[text()='{}']".format('Apply'))
+            )
+        )
+    except:
+        print("error appling the pic")
+    else:
+        apply_pic.click()
+        print("profile pic applied")
+    try:
+        bio = WebDriverWait(bot, 10).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, '[placeholder="Bio"]'))
+            )
+    
+    except:
+        print('error, finding the bio input')
+    
+    else:
+        bio.send_keys('bio text added.' + utils.text_aleatoire())
+        print("bio FOUND AND filed!")
 
-    print("opening new tab..")
+    print("opening new tab...")
     main_tiktok_page = bot.current_window_handle
 
-    bot.execute_script("window.open('https://www.capcut.com/signup');")
+    bot.execute_script("window.open('https://www.capcut.com/editor');")
 
     # Switch to the new tab
     bot.switch_to.window(bot.window_handles[1])
@@ -120,7 +107,7 @@ def upload_to_tiktok():
 
     main_cacpcut_page = bot.current_window_handle
     try:
-        span_element = WebDriverWait(bot, 10).until(
+        span_element = WebDriverWait(bot, 100).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[text()='{}']".format('Continue with TikTok'))
             )
@@ -131,54 +118,55 @@ def upload_to_tiktok():
     else:
         print("Span with text 'Continue with TikTok' found!")
         span_element.click()
-        for handle in bot.window_handles:
-            if handle != main_tiktok_page and handle != main_cacpcut_page:
-                login_page = handle
-                break
+        utils.handle_auth_tiktok(bot=bot, main_tiktok_page=main_tiktok_page, main_capcut_page=main_cacpcut_page)
+        # for handle in bot.window_handles:
+        #     if handle != main_tiktok_page and handle != main_cacpcut_page:
+        #         login_page = handle
+        #         break
 
-        # change the control to signin page
-        bot.switch_to.window(login_page)
-        print("switched to login with tiktok popup...")
-        print("finding the Continue button")
-        try:
-            continue_button = WebDriverWait(bot, 100).until(
-                EC.presence_of_element_located((By.ID, "auth-btn"))
-            )
-        except Exception as e:
-            print(e)
-            print('error, finding the Continue button...')
-            print("but we will continue!")
-            # print(bot.page_source)
+        # # change the control to signin page
+        # bot.switch_to.window(login_page)
+        # print("switched to login with tiktok popup...")
+        # print("finding the Continue button")
+        # try:
+        #     continue_button = WebDriverWait(bot, 100).until(
+        #         EC.presence_of_element_located((By.ID, "auth-btn"))
+        #     )
+        # except Exception as e:
+        #     print(e)
+        #     print('error, finding the Continue button...')
+        #     print("but we will continue!")
+        #     # print(bot.page_source)
 
-        else:
-            continue_button.click()
-            print("Continue Button FOUND AND CLICKED!")
-            time.sleep(2)
+        # else:
+        #     continue_button.click()
+        #     print("Continue Button FOUND AND CLICKED!")
+        #     time.sleep(2)
 
-        print("Switching to capcut main page")
-        bot.switch_to.window(main_cacpcut_page)
+        # print("Switching to capcut main page")
+        # bot.switch_to.window(main_cacpcut_page)
 
-    try:
-        create_button = WebDriverWait(bot, 20).until(
-            EC.presence_of_element_located((By.ID, "create-bottom"))
-        )
-    except Exception as e:
-        print(e)
-        print('error, finding the open capcut button...')
-        # print(bot.page_source)
+    # try:
+    #     create_button = WebDriverWait(bot, 20).until(
+    #         EC.presence_of_element_located((By.ID, "create-bottom"))
+    #     )
+    # except Exception as e:
+    #     print(e)
+    #     print('error, finding the open capcut button...')
+    #     # print(bot.page_source)
 
-    else:
-        create_button.click()
-        print("open capcut Button FOUND AND CLICKED!")
-        time.sleep(2)
+    # else:
+    #     create_button.click()
+    #     print("open capcut Button FOUND AND CLICKED!")
+    #     time.sleep(2)
 
-    print("getting the edit page...")
-    try:
-        bot.get("https://www.capcut.com/editor")
-    except Exception as e:
-        print(e)
-    else:
-        print("you are in the edit page")
+    # print("getting the edit page...")
+    # try:
+    #     bot.get("https://www.capcut.com/editor")
+    # except Exception as e:
+    #     print(e)
+    # else:
+    #     print("you are in the edit page")
     
     try:
         # Wait until the "Loading..." text is not present in the page
@@ -218,14 +206,26 @@ def upload_to_tiktok():
         print(p)
         video_uploader.send_keys(p)
         print("we've send the path to the input")
+    bot.switch_to(main_tiktok_page)
+    
 
-    # try:
-    #     WebDriverWait(bot, 100).until(
-    #         EC.presence_of_element_located((By.ID, 'canvas-cover')))
-    # except Exception as e:
-    #     print('we didnt find the canvas cover')
-    # else:
-    #     print("we did fined the cover canvas")
+
+    try:
+        submit = WebDriverWait(bot, 10).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, '[data-e2e="edit-profile-save"]'))
+        )
+    
+    except:
+        print('error, finding the edit profile save button')
+    
+    else:
+        submit.click()
+        print("save EDIT PROFILE FOUND AND CLICKED!")
+    print("sleeping for the test")
+    time.sleep(20)
+
+    
 
     try:
         # Wait until the "Loading..." text is not present in the page
@@ -263,7 +263,14 @@ def upload_to_tiktok():
         TIKTOK.click()
         print("TIKTOK button clicked")
 
-    time.sleep(200)
+    print(len(bot.window_handles))
+
+    if len(bot.window_handles) > 2:
+        utils.handle_auth_tiktok(bot, main_tiktok_page, main_cacpcut_page)
+
+
+
+    # time.sleep(200)
 
     try:
         exporter_first = WebDriverWait(bot, 100).until(
@@ -288,6 +295,8 @@ def upload_to_tiktok():
         ActionChains(bot).send_keys(Keys.RETURN).perform()
         # ActionChains(bot).send_keys(Keys.DOWN).perform()
         ActionChains(bot).send_keys(Keys.RETURN).perform()
+        ActionChains(bot).send_keys(Keys.TAB).perform()
+        ActionChains(bot).send_keys(Keys.SPACE).perform()
 
     try:
         share = WebDriverWait(bot, 1000).until(
