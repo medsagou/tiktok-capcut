@@ -1,10 +1,10 @@
 text -> bio (aleatoire) ***
 test -> fresh account
-profile + bio -> upload the video then save
+profile + bio -> upload the video then save ***
 could not upload error
 check the login
 google sheet (or txt)
-5 upload after the main uplaod
+5 upload after the main uplaod ***
 upload the video then delete it
 
 
