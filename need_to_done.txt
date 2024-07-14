@@ -2,9 +2,14 @@ text -> bio (aleatoire) ***
 test -> fresh account
 profile + bio -> upload the video then save ***
 could not upload error
-check the login
+check the login ***
 google sheet (or txt)
 5 upload after the main uplaod ***
 upload the video then delete it
+minimze ***
+click profile not showing *** 
+error export 1
+
+3.7605 3.135
 
 

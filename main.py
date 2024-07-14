@@ -5,17 +5,75 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import requests
+from playsound import playsound
+import files_interaction_utils
+import googlesheet
+from selenium.common.exceptions import StaleElementReferenceException
+import psutil
 # import pyautogui
+
+# import logging
+# logging.basicConfig(level=logging.DEBUG)
 
 
 # Huge credits to redianmarku
 # https://github.com/redianmarku/tiktok-autouploader
 
+def kill():
+    print("clearing...")
+    for proc in psutil.process_iter():
+        if proc.name() == 'chrome.exe':
+            proc.kill()
+    print("chrome is killed!")
+
+def find_profile(bot):
+    try:    
+        print('finding the profile')
+        profile_element = WebDriverWait(bot, 200).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'a[data-e2e="nav-profile"]')
+            )
+        )
+    except:
+        print('error, finding the profile')
+        try:
+            bot.get("https://www.tiktok.com/")
+        except:
+            print("quiting..")
+            bot.quit()
+        else:
+            try:
+                print('finding the profile')
+                profile_element = WebDriverWait(bot, 200).until(
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, 'a[data-e2e="nav-profile"]')
+                    )
+                )
+            except:
+                print("quiting..")
+                bot.quit()
+    else:
+        profile_element.click()
+        print("PROFILE FOUND AND CLICKED!")
+
+
+def export_first(bot):
+    try:
+        exporter_first = WebDriverWait(bot, 100).until(
+            EC.presence_of_element_located((By.ID, 'export-video-btn')))
+    except:
+        print('we didn\'t find the EXPORT video button')
+    else:
+        print("we've find the export video button")
+        utils.check_close_btn(bot)
+        exporter_first.click()
+        print("export button clicked")
+
 def upload_to_tiktok():
     print("init the bot")
     bot = utils.create_bot() # Might not work in headless mode
-    print("adjusting the window")
-    bot.set_window_size(1920, 1080*2) # Ensure upload button is visible, does not matter if it goes off screen
+    # print("adjusting the window")
+    # bot.set_window_size(1920, 1080*2) # Ensure upload button is visible, does not matter if it goes off screen
 
     # Fetch main page to load cookies, sometimes infinte loads, except and pass to keep going
     print("getting the site")
@@ -27,37 +85,38 @@ def upload_to_tiktok():
             print("refreshing...")
         else:
             break
-    try:
-        # Wait until the text "QR code scanned" appears
-        WebDriverWait(bot, 30).until(
-            EC.text_to_be_present_in_element((By.TAG_NAME, 'body'), "QR code scanned")
-        )
-        print("The text 'QR code scanned' has appeared!")
-        # bot.minimize_window()
-    except:
-        print("The text 'QR code scanned' did not appear within the time limit.")
-    print('finding the profile')
-    try:
-        profile_element = WebDriverWait(bot, 1000).until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, 'a[data-e2e="nav-profile"]')
-            )
-        )
-    except:
-        print('error, finding the profile')
-        pass
-    else:
-        profile_element.click()
-        print("PROFILE FOUND AND CLICKED!")
+    # try:
+    #     # Wait until the text "QR code scanned" appears
+    #     WebDriverWait(bot, 30).until(
+    #         EC.text_to_be_present_in_element((By.TAG_NAME, 'body'), "QR code scanned")
+    #     )
+    #     print("The text 'QR code scanned' has appeared!")
+    #     # bot.minimize_window()
+    # except:
+    #     print("The text 'QR code scanned' did not appear within the time limit.")
+        
+    # try:
+    #      WebDriverWait(bot, 1000).until(
+    #         EC.presence_of_element_located(
+    #             (By.CSS_SELECTOR, '[data-e2e="qr-code"]')
+    #         )
+    #     )
+    # except:
+    #     print("qr not found")
+    # else:
+    #     bot.save_screenshot('screenshot.png')
+    #     print("its working")
+    
+    find_profile(bot=bot)
 
     try:
-        edit_profile =  WebDriverWait(bot, 100).until(
+        edit_profile =  WebDriverWait(bot, 50).until(
         EC.element_to_be_clickable((By.XPATH, "//button[@type='button' and .//*[contains(text(), 'Edit profile')]]"))
     )
     except Exception as e:
         print(e)
         print('error, finding the edit profile button')
-        pass
+        find_profile()
     else:
         edit_profile.click()
         print("EDIT PROFILE FOUND AND CLICKED!")
@@ -71,7 +130,7 @@ def upload_to_tiktok():
     else:
         print("we've find the file uploader button")
         # p = os.getcwd()+f'\\render\\{name}.mp4'
-        p = os.getcwd() + '\\dd.PNG'
+        p = os.getcwd() + '\\profile.PNG'
         print(p)
         profile_pic_uploder.send_keys(p)
         print("we've send the path to the input")
@@ -97,7 +156,8 @@ def upload_to_tiktok():
         print('error, finding the bio input')
     
     else:
-        bio.send_keys('bio text added.')
+        print("bio :",files_interaction_utils.get_file_content(os.getcwd() + "\\bio.txt"))
+        bio.send_keys(files_interaction_utils.get_file_content(os.getcwd() + "\\bio.txt"))
         print("bio FOUND AND filed!")
 
     print("opening new tab...")
@@ -115,6 +175,7 @@ def upload_to_tiktok():
 
     main_cacpcut_page = bot.current_window_handle
     utils.handle_login_element(bot, main_tiktok_page, main_cacpcut_page)
+
             
     
     try:
@@ -151,9 +212,10 @@ def upload_to_tiktok():
     else:
         print("we've find the video uploader button")
         # p = os.getcwd()+f'\\render\\{name}.mp4'
-        p = os.getcwd() + '\\123.mp4'
-        print(p)
-        video_uploader.send_keys(p)
+        video_path = files_interaction_utils.get_first_element_path(os.getcwd() + "\\videos\\")
+        new_video_path = files_interaction_utils.add_bracket_to_filename(file_path = video_path)
+        print(new_video_path)
+        video_uploader.send_keys(new_video_path)
         print("we've send the path to the input")
     bot.switch_to.window(main_tiktok_page)
     
@@ -169,6 +231,8 @@ def upload_to_tiktok():
     else:
         submit.click()
         print("save EDIT PROFILE FOUND AND CLICKED!")
+    profile_link = bot.current_url
+    print(profile_link)
     
     bot.switch_to.window(main_cacpcut_page)
     try:
@@ -180,24 +244,16 @@ def upload_to_tiktok():
     except:
         print("Timed out waiting for 'Or drag and drop file here' text to disappear.")
 
-    try:
-        exporter_first = WebDriverWait(bot, 100).until(
-            EC.presence_of_element_located((By.ID, 'export-video-btn')))
-    except:
-        print('error finding the EXPORT video button')
-    else:
-        print("we've find the export video button")
-        utils.check_close_btn(bot)
-        exporter_first.click()
-        print("export button clicked")
-
     
 
+    export_first(bot)
+
     try:
-        TIKTOK = WebDriverWait(bot, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, '[name="icon-thirdpart-tiktok"]')))
+        TIKTOK = WebDriverWait(bot, 20).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, '[name="icon-thirdpart-tiktok"]')))
     except:
-        print('error finding the TIKTOK button')
+        print('we didn\'t find the TIKTOK button')
+        export_first(bot)
     else:
         print("we've find the TIKTOK button")
         # utils.check_close_btn(bot)
@@ -211,15 +267,21 @@ def upload_to_tiktok():
         utils.handle_auth_tiktok(bot, main_tiktok_page, main_cacpcut_page)
         try:
             TIKTOK = WebDriverWait(bot, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, '[name="icon-thirdpart-tiktok"]')))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '[name="icon-thirdpart-tiktok"]')))
         except:
-            print('error finding the TIKTOK button')
+            print('we didn\'t find the TIKTOK button')
+            export_first(bot)
         else:
             print("we've find the TIKTOK button")
             # utils.check_close_btn(bot)
             # time.sleep(1)
             TIKTOK.click()
             print("TIKTOK button clicked")
+            try:
+                TIKTOK = WebDriverWait(bot, 1).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, '[name="icon-thirdpart-tiktok"]')))
+            except:
+                print('we ddint find the TIKTOK button for the second time')
 
 
 
@@ -243,7 +305,7 @@ def upload_to_tiktok():
     except:
         print("we didnt find the textarea for the title")
     else:
-        title_textarea.send_keys("this is a title for the test" + utils.text_aleatoire())
+        title_textarea.send_keys(files_interaction_utils.get_random_line(os.getcwd() + "\\titles.txt") + utils.text_aleatoire())
         ActionChains(bot).send_keys(Keys.TAB).perform()
         ActionChains(bot).send_keys(Keys.RETURN).perform()
         # ActionChains(bot).send_keys(Keys.DOWN).perform()
@@ -252,7 +314,7 @@ def upload_to_tiktok():
         ActionChains(bot).send_keys(Keys.SPACE).perform()
 
     try:
-        share = WebDriverWait(bot, 1000).until(
+        share = WebDriverWait(bot, 1000, ignored_exceptions=StaleElementReferenceException).until(
             EC.element_to_be_clickable((By.XPATH, "//button[.//span[text()='Share']]")))
     except Exception as e:
         print(e, 'we didnt find the share button')
@@ -276,16 +338,42 @@ def upload_to_tiktok():
         print(f"Second response status code: {response2.status_code}")
         print(f"third response status code: {response3.status_code}")
         print(f"fourth response status code: {response4.status_code}")
-        print(f"fourth response status code: {response5.status_code}")
+        print(f"fifth response status code: {response5.status_code}")
+        files_interaction_utils.add_text_to_file(file_path=os.getcwd() + '\\sheet.txt',text = profile_link)
+        gs = googlesheet.GoogleSheet()
+        gs.save(value = profile_link)
+        print("removing the file")
+        files_interaction_utils.remove_file(new_video_path)
     else:
         print("The 'publish' request was not captured.")
 
-    # print("sleeping")
-    # time.sleep(2000)
-
-    # Close the browser
-    print("closing the browser")
-    bot.quit()
+    
+    # check if there's any error
+        
+    try:
+    # You can use different locators here. Example: By.XPATH, By.CLASS_NAME, etc.
+        body_text = bot.find_element(By.TAG_NAME, 'body').text
+        if "Couldn't upload" in body_text:
+            print("Text found on the page!")
+            playsound(os.getcwd() + "\\notification.wav")
+            time.sleep(500)
+        else:
+            print("Text not found on the page.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    
+    try:
+        bot.switch_to.window(main_tiktok_page)
+        print("closing the browser")
+        bot.quit()
+        print("browser closed successfuly")
+        print("clearing...")
+        kill()
+        # os.system("taskkill /f /im geckodriver.exe /T")
+        # os.system("taskkill /f /im chromedriver.exe /T")
+        # os.system("taskkill /f /im IEDriverServer.exe /T")
+    except:
+        pass
 
 
 
@@ -295,4 +383,9 @@ def upload_to_tiktok():
 if __name__=='__main__':
     # for i in range(10):
     #     print(i)
-        upload_to_tiktok()
+        try:
+            upload_to_tiktok()
+        except:
+            print("clearing...")
+            kill()
+

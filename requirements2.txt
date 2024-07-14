@@ -1,0 +1,7 @@
+undetected-chromedriver
+selenium
+edge-tts
+moviepy
+requests
+pyyaml
+Pillow==9.5.0
