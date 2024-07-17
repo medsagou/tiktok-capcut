@@ -18,8 +18,8 @@ class GoogleSheet:
 
     def update_sheet(self, n, value):
         self.sheet.update_cell(n, 1, value)
-        cell = self.sheet.cell(n, 1)
-        print('Cell After Update: ',cell.value)
+        # cell = self.sheet.cell(n, 1)
+        print('Cell After Update: ', value)
 
     def save(self, value):
         fname = "config.yaml"

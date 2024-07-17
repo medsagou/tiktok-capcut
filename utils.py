@@ -31,6 +31,7 @@ def create_bot(headless=False):
         options.add_argument('--ignore-ssl-errors=yes')
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--disable-extensions')
+        options.add_argument("--disable-backgrounding-occluded-windows")
         # options.headless = True
         prefs = {'profile.default_content_setting_values': { 
                             'plugins': 2, 'popups': 2, 'geolocation': 2, 
@@ -68,8 +69,9 @@ def check_close_btn(bot):
     try:
         close_btn = WebDriverWait(bot, 1).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "[class^='guide-close-icon-']")))
-    except:
-        print('error finding the close button')
+    except Exception as e:
+        print('we didnt find the close button')
+        # print(e)
     else:
         print("we've find the close button")
         try:
@@ -100,11 +102,12 @@ def handle_auth_tiktok(bot, main_tiktok_page, main_capcut_page):
     print("finding the Continue button")
     try:
         continue_button = WebDriverWait(bot, 100).until(
-            EC.presence_of_element_located((By.ID, "auth-btn"))
+            EC.element_to_be_clickable((By.ID, "auth-btn"))
         )
+        # continue_button = WebDriverWait(bot, 100).until(EC.presence_of_element_located((By.XPATH, '//button[div/div[text()="Continue"]]')))
     except Exception as e:
         # print(e)
-        print('error, finding the Continue button...')
+        print('we didnt find the Continue button...')
         print("but we will continue!")
         try:
             bot.switch_to.window(main_capcut_page)
@@ -126,10 +129,10 @@ def handle_auth_tiktok(bot, main_tiktok_page, main_capcut_page):
         continue_button.click()
         print("Continue Button FOUND AND CLICKED!")
         
-        print("Switching to capcut main page")
+        # print("Switching to capcut main page")
         try:
             print("waiting to automaticly close the windows")
-            WebDriverWait(bot, 50).until(lambda d: len(d.window_handles) == 2)
+            WebDriverWait(bot, 30).until(lambda d: len(d.window_handles) == 2)
             bot.switch_to.window(main_capcut_page)
         except:
             print("there three windows, I dont know what to do")

@@ -10,6 +10,7 @@ import files_interaction_utils
 import googlesheet
 from selenium.common.exceptions import StaleElementReferenceException
 import psutil
+import ray
 # import pyautogui
 
 # import logging
@@ -35,7 +36,7 @@ def find_profile(bot):
             )
         )
     except:
-        print('error, finding the profile')
+        print('we didnt find the profile')
         try:
             bot.get("https://www.tiktok.com/")
         except:
@@ -59,16 +60,24 @@ def find_profile(bot):
 
 def export_first(bot):
     try:
+        # time.sleep(200)
         exporter_first = WebDriverWait(bot, 100).until(
             EC.presence_of_element_located((By.ID, 'export-video-btn')))
+        # exporter_first = WebDriverWait(bot, 20).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Export"]]')))
     except:
         print('we didn\'t find the EXPORT video button')
     else:
         print("we've find the export video button")
         utils.check_close_btn(bot)
-        exporter_first.click()
+        try:
+            exporter_first.click()
+        except:
+            print("exeption 223")
+            utils.check_close_btn
+            export_first()
         print("export button clicked")
 
+@ray.remote
 def upload_to_tiktok():
     print("init the bot")
     bot = utils.create_bot() # Might not work in headless mode
@@ -115,7 +124,7 @@ def upload_to_tiktok():
     )
     except Exception as e:
         print(e)
-        print('error, finding the edit profile button')
+        print('we didnt find the edit profile button')
         find_profile()
     else:
         edit_profile.click()
@@ -126,7 +135,7 @@ def upload_to_tiktok():
             EC.presence_of_element_located((By.CSS_SELECTOR, '[type="file"]')))
     
     except:
-        print('error finding the profile pic editor')
+        print('we didnt find the profile pic editor')
     else:
         print("we've find the file uploader button")
         # p = os.getcwd()+f'\\render\\{name}.mp4'
@@ -142,7 +151,7 @@ def upload_to_tiktok():
             )
         )
     except:
-        print("error appling the pic")
+        print("we didnt applie the pic")
     else:
         apply_pic.click()
         print("profile pic applied")
@@ -153,7 +162,7 @@ def upload_to_tiktok():
             )
     
     except:
-        print('error, finding the bio input')
+        print('we ddint found the bio input')
     
     else:
         print("bio :",files_interaction_utils.get_file_content(os.getcwd() + "\\bio.txt"))
@@ -208,7 +217,7 @@ def upload_to_tiktok():
         video_uploader = WebDriverWait(bot, 100).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, '[type="file"]')))
     except:
-        print('error finding the video uploader button')
+        print('we didnt find the video uploader button')
     else:
         print("we've find the video uploader button")
         # p = os.getcwd()+f'\\render\\{name}.mp4'
@@ -226,7 +235,7 @@ def upload_to_tiktok():
         )
     
     except:
-        print('error, finding the edit profile save button')
+        print('we didnt find the edit profile save button')
     
     else:
         submit.click()
@@ -291,7 +300,7 @@ def upload_to_tiktok():
         exporter_second = WebDriverWait(bot, 100).until(
             EC.element_to_be_clickable((By.ID, 'export-confirm-button')))
     except:
-        print('error finding the EXPORT 2 video button')
+        print('we didnt find the EXPORT 2 video button')
     else:
         print("we've find the export 2 video button")
         # utils.check_close_btn(bot)
@@ -340,8 +349,8 @@ def upload_to_tiktok():
         print(f"fourth response status code: {response4.status_code}")
         print(f"fifth response status code: {response5.status_code}")
         files_interaction_utils.add_text_to_file(file_path=os.getcwd() + '\\sheet.txt',text = profile_link)
-        gs = googlesheet.GoogleSheet()
-        gs.save(value = profile_link)
+        # gs = googlesheet.GoogleSheet()
+        # gs.save(value = profile_link)
         print("removing the file")
         files_interaction_utils.remove_file(new_video_path)
     else:
@@ -381,11 +390,6 @@ def upload_to_tiktok():
 
 
 if __name__=='__main__':
-    # for i in range(10):
-    #     print(i)
-        try:
-            upload_to_tiktok()
-        except:
-            print("clearing...")
-            kill()
+    ray.get([upload_to_tiktok(), upload_to_tiktok()])
+    
 
