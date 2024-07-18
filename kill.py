@@ -7,3 +7,5 @@ def kill():
         if proc.name() == 'chrome.exe':
             proc.kill()
     print("chrome is killed!")
+
+kill()
