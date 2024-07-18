@@ -78,8 +78,8 @@ def export_first(bot):
         print("export button clicked")
 
 
-def upload_to_tiktok(time):
-    time.sleep(time)
+def upload_to_tiktok(second):
+    time.sleep(second)
     print("init the bot")
     bot = utils.create_bot() # Might not work in headless mode
     # print("adjusting the window")
