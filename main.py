@@ -78,7 +78,7 @@ def export_first(bot):
         print("export button clicked")
 
 
-def upload_to_tiktok(time=0):
+def upload_to_tiktok(time):
     time.sleep(time)
     print("init the bot")
     bot = utils.create_bot() # Might not work in headless mode
@@ -391,8 +391,8 @@ def upload_to_tiktok(time=0):
 if __name__=='__main__':
     import threading
     print("starting")
-    thread1 = threading.Thread(target=upload_to_tiktok)
-    thread2 = threading.Thread(target=upload_to_tiktok, args=(5))
+    thread1 = threading.Thread(target=upload_to_tiktok, args=(0,))
+    thread2 = threading.Thread(target=upload_to_tiktok, args=(5,))
 
     thread1.start()
     thread2.start()
