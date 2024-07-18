@@ -389,16 +389,17 @@ def upload_to_tiktok(second):
 
 
 if __name__=='__main__':
-    import threading
-    print("starting")
-    thread1 = threading.Thread(target=upload_to_tiktok, args=(0,))
-    thread2 = threading.Thread(target=upload_to_tiktok, args=(5,))
+    upload_to_tiktok(second=0.01)
+    # import threading
+    # print("starting")
+    # thread1 = threading.Thread(target=upload_to_tiktok, args=(0,))
+    # thread2 = threading.Thread(target=upload_to_tiktok, args=(5,))
 
-    thread1.start()
-    thread2.start()
+    # thread1.start()
+    # thread2.start()
 
-    thread1.join()
-    thread2.join()
-    # upload_to_tiktok()
+    # thread1.join()
+    # thread2.join()
+    # # upload_to_tiktok()
     
 
