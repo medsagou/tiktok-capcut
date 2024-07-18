@@ -58,13 +58,13 @@ def create_bot(headless=False):
         # bot = webdriver.Firefox(firefox_profile)
         bot = uc.Chrome(options=options, seleniumwire_options=seleniumwire_options, executable_path=os.getcwd() + "\\chromedriver.exe")
         # bot = webdriver.Chrome(options=options)
-        # bot.scopes = ['.*edit-api-sg.capcut.*']
+        bot.scopes = ['.*edit-api-sg.capcut.*']
     else:
         bot = webdriver.Firefox()
     
     bot.maximize_window()
     # bot.set_page_load_timeout(25)
-    # bot.set_window_size(1024, 768)
+    bot.set_window_size(1920, 1080)
     return bot
 
 
