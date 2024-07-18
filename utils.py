@@ -64,49 +64,6 @@ def create_bot(headless=False):
     # bot.set_window_size(1024, 768)
     return bot
 
-def create_bot2(headless=False):
-    if not config['firefox']:
-        options = uc.ChromeOptions()
-        # options = webdriver.ChromeOptions()
-
-        option_slwr={'disable_capture': True}
-        options.add_argument("--log-level=3")
-        options.add_argument('--disable-features=PrivacySandboxSettings4')
-        options.add_argument('--ignore-ssl-errors=yes')
-        options.add_argument('--ignore-certificate-errors')
-        options.add_argument('--disable-extensions')
-        options.add_argument("--disable-backgrounding-occluded-windows")
-        # options.headless = True
-        prefs = {'profile.default_content_setting_values': { 
-                            'plugins': 2, 'popups': 2, 'geolocation': 2, 
-                            'notifications': 2, 'auto_select_certificate': 2, 'fullscreen': 2, 
-                            'mouselock': 2, 'mixed_script': 2, 'media_stream': 2, 
-                            'media_stream_mic': 2, 'media_stream_camera': 2, 'protocol_handlers': 2, 
-                            'ppapi_broker': 2, 'automatic_downloads': 2, 'midi_sysex': 2, 
-                            'push_messaging': 2, 'ssl_cert_decisions': 2, 'metro_switch_to_desktop': 2, 
-                            'protected_media_identifier': 2, 'app_banner': 2, 'site_engagement': 2, 
-                            'durable_storage': 2}}
-        options.add_experimental_option("prefs", prefs)
-        # options.add_argument('disable-infobars')
-
-        seleniumwire_options = {
-            'disable_encoding': True,
-            'verify_ssl': False,
-            'ignore_http_methods': ['GET', 'OPTIONS']
-        }
-
-
-        # bot = webdriver.Firefox(firefox_profile)
-        bot = uc.Chrome(options=options, seleniumwire_options=seleniumwire_options, executable_path=os.getcwd() + "\\chromedriver2.exe")
-        # bot = webdriver.Chrome(options=options)
-        # bot.scopes = ['.*edit-api-sg.capcut.*']
-    else:
-        bot = webdriver.Firefox()
-    
-    bot.maximize_window()
-    # bot.set_page_load_timeout(25)
-    # bot.set_window_size(1024, 768)
-    return bot
 
 def check_close_btn(bot):
     try:

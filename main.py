@@ -10,7 +10,7 @@ import files_interaction_utils
 import googlesheet
 from selenium.common.exceptions import StaleElementReferenceException
 import psutil
-import ray
+# import ray
 # import pyautogui
 
 # import logging
@@ -77,7 +77,7 @@ def export_first(bot):
             export_first()
         print("export button clicked")
 
-@ray.remote
+
 def upload_to_tiktok():
     print("init the bot")
     bot = utils.create_bot() # Might not work in headless mode
@@ -384,8 +384,6 @@ def upload_to_tiktok():
     except:
         pass
 
-@ray.remote  
-def upload_to_tiktok2():
     print("init the bot")
     bot = utils.create_bot2() # Might not work in headless mode
     # print("adjusting the window")
@@ -696,7 +694,6 @@ def upload_to_tiktok2():
 
 
 if __name__=='__main__':
-    ray.init()
-    ray.get([upload_to_tiktok.remote(), upload_to_tiktok2.remote()])
+    upload_to_tiktok()
     
 
