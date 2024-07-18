@@ -392,7 +392,7 @@ if __name__=='__main__':
     import threading
     print("starting")
     thread1 = threading.Thread(target=upload_to_tiktok)
-    thread2 = threading.Thread(target=upload_to_tiktok, args=[time=5])
+    thread2 = threading.Thread(target=upload_to_tiktok, args=(5))
 
     thread1.start()
     thread2.start()
