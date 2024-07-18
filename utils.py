@@ -32,6 +32,9 @@ def create_bot(headless=False):
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--disable-extensions')
         options.add_argument("--disable-backgrounding-occluded-windows")
+        options.add_argument("--disable-background-timer-throttling")
+        options.add_argument("--disable-renderer-backgrounding")
+
         # options.headless = True
         prefs = {'profile.default_content_setting_values': { 
                             'plugins': 2, 'popups': 2, 'geolocation': 2, 
@@ -113,6 +116,15 @@ def handle_auth_tiktok(bot, main_tiktok_page, main_capcut_page):
             bot.switch_to.window(main_capcut_page)
         except:
             pass
+        try:
+            # Wait until the "Welcome to CapCut" text is not present in the page
+            WebDriverWait(bot, 10).until(
+                EC.invisibility_of_element((By.XPATH, "//*[text()='Welcome to CapCut']"))
+            )
+            print("The 'Welcome to CapCut' text is no longer present on the page.")
+        except:
+            print("Timed out waiting for 'Welcome to CapCut' text to disappear.")
+            handle_login_element(bot, main_tiktok_page, main_cacpcut_page)
         check_close_btn(bot)
         try:
             WebDriverWait(bot, 100).until(
