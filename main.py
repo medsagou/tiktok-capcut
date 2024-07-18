@@ -390,6 +390,6 @@ def upload_to_tiktok():
 
 
 if __name__=='__main__':
-    ray.get([upload_to_tiktok(), upload_to_tiktok()])
+    ray.get([upload_to_tiktok, upload_to_tiktok])
     
 
