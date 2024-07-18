@@ -9,7 +9,7 @@ from playsound import playsound
 import files_interaction_utils
 import googlesheet
 from selenium.common.exceptions import StaleElementReferenceException
-import psutil
+# import psutil
 # import ray
 # import pyautogui
 
@@ -22,9 +22,9 @@ import psutil
 
 def kill():
     print("clearing...")
-    for proc in psutil.process_iter():
-        if proc.name() == 'chrome.exe':
-            proc.kill()
+    # for proc in psutil.process_iter():
+    #     if proc.name() == 'chrome.exe':
+    #         proc.kill()
     print("chrome is killed!")
 
 def find_profile(bot):
