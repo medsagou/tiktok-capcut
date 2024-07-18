@@ -387,10 +387,7 @@ def upload_to_tiktok():
 
 
 
-
-
 if __name__=='__main__':
-    ray.init()
-    ray.get([upload_to_tiktok.remote(), upload_to_tiktok.remote()])
+    upload_to_tiktok()
     
 
