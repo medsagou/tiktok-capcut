@@ -34,6 +34,7 @@ def create_bot(headless=False):
         options.add_argument("--disable-backgrounding-occluded-windows")
         options.add_argument("--disable-background-timer-throttling")
         options.add_argument("--disable-renderer-backgrounding")
+        options.page_load_strategy = 'eager'
 
         # options.headless = True
         prefs = {'profile.default_content_setting_values': { 
@@ -144,7 +145,7 @@ def handle_auth_tiktok(bot, main_tiktok_page, main_capcut_page):
         # print("Switching to capcut main page")
         try:
             print("waiting to automaticly close the windows")
-            WebDriverWait(bot, 30).until(lambda d: len(d.window_handles) == 2)
+            WebDriverWait(bot, 100).until(lambda d: len(d.window_handles) == 2)
             bot.switch_to.window(main_capcut_page)
         except:
             print("there three windows, I dont know what to do")
